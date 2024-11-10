@@ -10,8 +10,6 @@ namespace SocialMediaMVCwebApp.Models
         public string Country { get; set; }
         public string Location { get; set; }// City/Village
         public string Region{ get; set; } // Oblast, State...
-        public int MyProperty { get; set; }
-
 
     }
 }
