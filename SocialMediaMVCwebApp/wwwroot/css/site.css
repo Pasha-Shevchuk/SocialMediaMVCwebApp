@@ -20,3 +20,30 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Global Dark Mode Styles */
+body {
+    background-color: #121212;
+    color: #EAEAEA;
+}
+
+/* Optional: Style the container to better fit dark mode */
+.container {
+    background-color: #1D1D1D;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Optional: Style the cards for more contrast */
+.card {
+    background-color: #1D1D1D;
+    border: 1px solid grey;
+}
+
+.card-title, .card-text, .card-body {
+    color: #EAEAEA;
+}
+
+.card-img-top {
+    filter: brightness(70%);
+}
