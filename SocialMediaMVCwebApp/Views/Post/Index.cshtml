@@ -22,7 +22,7 @@
             {
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm h-100">
-                        <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="@post.Image" alt="Alternate Text" style="object-fit: cover;" />
+                        <img class="bd-placeholder-img img-top" width="100%" height="225" src="@post.Image" alt="Alternate Text" style="object-fit: cover;" />
                         <div class="card-body">
                             <h5 class="card-title font-weight-bold mb-2">@post.Title</h5>
                             @* <p class="card-text text-muted">@post.PostText</p> *@
@@ -32,7 +32,11 @@
                                 
                                 <div class="d-flex align-items-center">
                                     <i class="bi bi-geo-alt text-danger me-2"></i>
-                                    <span class="text-muted"><strong>Location:</strong> @post.Location, @post.Region, @post.Country</span>
+                                    
+                                    <span class="text-muted"><strong>Location:</strong>@post.Country @post.Region @post.Location
+                                    </span>
+                                   
+
                                 </div>
                             </div>
 

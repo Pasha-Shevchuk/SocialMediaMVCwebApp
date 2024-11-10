@@ -56,7 +56,12 @@ namespace SocialMediaMVCwebApp.Repository
             return post;
         }
 
-       
+
+        public async Task<IEnumerable<PostCategory>> GetAllPostCategories()
+        {
+            return await _context.PostCategories.ToListAsync();
+        }
+
     }
 
 }

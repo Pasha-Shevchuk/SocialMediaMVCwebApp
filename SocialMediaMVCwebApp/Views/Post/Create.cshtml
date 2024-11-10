@@ -1,0 +1,56 @@
+﻿@using SocialMediaMVCwebApp.ViewModels
+@model CreatePostViewModel
+
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+<h2>Create Post</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Title">Title</label>
+        <input type="text" asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="PostText">Post Text</label>
+        <textarea asp-for="PostText" class="form-control"></textarea>
+        <span asp-validation-for="PostText" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Image">Image URL</label>
+        <input type="text" asp-for="Image" class="form-control" />
+        <span asp-validation-for="Image" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="PostCategoryId">Post Category</label>
+        <select asp-for="PostCategoryId" class="form-control" asp-items="Model.PostCategories">
+            <option value="">Select Category</option>
+        </select>
+        <span asp-validation-for="PostCategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Country">Country</label>
+        <input type="text" asp-for="Country" class="form-control" />
+        <span asp-validation-for="Country" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Location">Location</label>
+        <input type="text" asp-for="Location" class="form-control" />
+        <span asp-validation-for="Location" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Region">Region</label>
+        <input type="text" asp-for="Region" class="form-control" />
+        <span asp-validation-for="Region" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
