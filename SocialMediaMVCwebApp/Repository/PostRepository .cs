@@ -15,6 +15,30 @@ namespace SocialMediaMVCwebApp.Repository
             _context = context;
         }
 
+        public bool Add(Post post)
+        {
+            _context.Add(post);
+            return Save();
+        }
+
+        public bool Delete(Post post)
+        {
+            _context.Remove(post);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0? true: false;
+        }
+
+        public bool Update(Post post)
+        {
+            _context.Update(post);
+            return Save();
+        }
+
         public async Task<IEnumerable<Post>> GetAllPosts()
         {
             return await _context.Posts
@@ -31,6 +55,8 @@ namespace SocialMediaMVCwebApp.Repository
                 .FirstOrDefaultAsync(p => p.Id == id);
             return post;
         }
+
+       
     }
 
 }
