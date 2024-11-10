@@ -1,17 +1,25 @@
 using Microsoft.EntityFrameworkCore;
 using SocialMediaMVCwebApp.Data;
+using SocialMediaMVCwebApp.Interfaces;
+using SocialMediaMVCwebApp.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
+// Register the DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+
+
+
 var app = builder.Build();
+
 
 if(args.Length == 1 && args[0].ToLower() == "seeddata")
 {
