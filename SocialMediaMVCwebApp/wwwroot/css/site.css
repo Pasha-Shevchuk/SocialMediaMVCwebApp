@@ -1,49 +1,60 @@
-html {
-  font-size: 14px;
+﻿html, body {
+    font-size: 14px;
+    background-color: #121212;
+    color: #EAEAEA;
+    min-height: 100vh;
+    position: relative;
+    margin: 0;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    padding-bottom: 60px; /* Краще використати padding-bottom замість margin-bottom */
 }
 
-/* Global Dark Mode Styles */
-body {
-    background-color: #121212;
-    color: #EAEAEA;
+/* Фокус для кнопок та інших елементів */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-/* Optional: Style the container to better fit dark mode */
+/* Dark Mode Styles */
 .container {
     background-color: #1D1D1D;
     border-radius: 8px;
     padding: 20px;
 }
 
-/* Optional: Style the cards for more contrast */
 .card {
     background-color: #1D1D1D;
-    border: 1px solid grey;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.card-title, .card-text, .card-body {
+.card-title,
+.card-text,
+.card-body {
     color: #EAEAEA;
 }
 
 .card-img-top {
     filter: brightness(70%);
+}
+
+/* Додаткові стилі для футера */
+footer {
+    background-color: #1D1D1D;
+    color: #EAEAEA;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
