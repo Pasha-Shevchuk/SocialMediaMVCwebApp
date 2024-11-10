@@ -11,10 +11,12 @@ namespace SocialMediaMVCwebApp.Controllers
     public class PostController : Controller
     {
         private readonly IPostRepository _postRepository;
+        private readonly IPhotoService _photoService;
 
-        public PostController(IPostRepository postRepository)
+        public PostController(IPostRepository postRepository, IPhotoService photoService)
         {
             _postRepository = postRepository;
+            _photoService = photoService;
         }
 
         public async Task<IActionResult> Index()
@@ -61,12 +63,14 @@ namespace SocialMediaMVCwebApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                var result = await _photoService.AddPhotoAsync(model.Image, 400, 600);
+
                 // Create a new Post
                 var post = new Post
                 {
                     Title = model.Title,
                     PostText = model.PostText,
-                    Image = model.Image,  // You may want to add file upload handling here
+                    Image = result.Url.ToString(),  // You may want to add file upload handling here
                     PostCategoryId = model.PostCategoryId,
                     Address = new Address
                     {

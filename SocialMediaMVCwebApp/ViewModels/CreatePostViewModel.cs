@@ -6,7 +6,7 @@ namespace SocialMediaMVCwebApp.ViewModels
     {
         public string Title { get; set; }
         public string PostText { get; set; }
-        public string Image { get; set; }
+        public IFormFile Image { get; set; }
         public int PostCategoryId { get; set; }
         public List<SelectListItem>? PostCategories { get; set; }
 
