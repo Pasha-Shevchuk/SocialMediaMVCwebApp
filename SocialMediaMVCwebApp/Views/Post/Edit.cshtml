@@ -1,13 +1,13 @@
 ﻿@using SocialMediaMVCwebApp.ViewModels
-@model CreatePostViewModel
+@model EditPostViewModel
 
 @{
-    ViewData["Title"] = "Create Post";
+    ViewData["Title"] = "Edit Post";
 }
 
-<h2 class="mb-4">Create Post</h2>
+<h2 class="mb-4">Edit Post</h2>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data" class="p-4 text-white">
+<form asp-action="Edit" method="post" enctype="multipart/form-data" class="p-4 text-white">
     <div class="mb-3">
         <label for="Title" class="form-label">Title</label>
         <input type="text" asp-for="Title" class="form-control" placeholder="Enter post title" />
@@ -58,6 +58,6 @@
     </div>
 
     <div class="mt-4 d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
     </div>
 </form>

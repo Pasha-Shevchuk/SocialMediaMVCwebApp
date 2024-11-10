@@ -9,7 +9,7 @@
         <!-- Post Image -->
         <div class="col-md-12">
             <div class="card shadow-sm">
-                <img src="@Model.Image" class="img-top" alt="Post Image" />
+                <img src="@Model.Image" class="img-top" alt="Post Image" height="600px" />
             </div>
         </div>
     </div>
@@ -37,12 +37,15 @@
                         <strong class="text-white">Category:</strong>
                         <span class="badge bg-secondary bg-opacity-50">@Model.PostCategoryName</span>
                     </div>
-
-                    <!-- Post Location -->
-                    <div class="mb-2">
-                        <strong class="text-white">Location:</strong>
-                        <span class="text-muted">@Model.Location, @Model.Region, @Model.Country</span>
-                    </div>
+                    @if(!(Model.Location is null && Model.Country is null && Model.Region is null))
+                    {
+                        <!-- Post Location -->
+                        <div class="mb-2">
+                            <strong class="text-white">Location:</strong>
+                            <span class="text-muted">@Model.Location @Model.Region @Model.Country</span>
+                        </div>
+                    }
+                   
 
                     <!-- Post Details -->
                     <div class="d-flex justify-content-between align-items-center">

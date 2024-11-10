@@ -1,13 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using SocialMediaMVCwebApp.Data;
+using SocialMediaMVCwebApp.Helpers;
 using SocialMediaMVCwebApp.Interfaces;
 using SocialMediaMVCwebApp.Repository;
+using SocialMediaMVCwebApp.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+
 
 // Register the DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
