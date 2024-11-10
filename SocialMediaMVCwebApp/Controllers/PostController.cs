@@ -19,7 +19,7 @@ namespace SocialMediaMVCwebApp.Controllers
         public async Task<IActionResult> Index()
         {
             IEnumerable<Post> posts = await _postRepository.GetAllPosts();
-            var postViewModels = posts.Select(post => MapToViewModel(post));
+            IEnumerable<PostViewModel> postViewModels = posts.Select(post => MapToViewModel(post));
 
             return View(postViewModels);
         }
