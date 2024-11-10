@@ -17,8 +17,18 @@ namespace SocialMediaMVCwebApp.Controllers
 
         public IActionResult Index()
         {
-            var posts = _postRepository.GetAllPosts();
+            IEnumerable<PostViewModel> posts = _postRepository.GetAllPosts();
             return View(posts);
+        }
+
+        public IActionResult Detail(int id)
+        {
+            PostViewModel post = _postRepository.GetById(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return View(post);
         }
 
     }
