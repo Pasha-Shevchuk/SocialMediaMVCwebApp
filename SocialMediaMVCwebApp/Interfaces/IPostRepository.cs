@@ -7,7 +7,7 @@ namespace SocialMediaMVCwebApp.Interfaces
     {
         Task<IEnumerable<Post>> GetAllPosts();
         Task<Post> GetById(int id);
-
+        Task<IEnumerable<PostCategory>> GetAllPostCategories();
         // crud
         bool Add(Post post);
         bool Update(Post post);
