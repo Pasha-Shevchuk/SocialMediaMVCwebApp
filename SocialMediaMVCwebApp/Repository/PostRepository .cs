@@ -14,9 +14,9 @@ namespace SocialMediaMVCwebApp.Repository
             _context = context;
         }
 
-        public IEnumerable<PostViewModel> GetAllPosts()
+        public async Task<IEnumerable<PostViewModel>> GetAllPosts()
         {
-            IEnumerable<PostViewModel> posts = _context.Posts
+            var posts =  await _context.Posts
                 .Include(p => p.PostCategory)
                 .Include(p => p.Address)
                 .Select(post => new PostViewModel
@@ -26,17 +26,17 @@ namespace SocialMediaMVCwebApp.Repository
                     PostText = post.PostText,
                     Image = post.Image,
                     PostCategoryId = post.PostCategoryId, // POST CATEGORY ID
-                    PostCategoryName = post.PostCategory.NameOfPostCategory, 
+                    PostCategoryName = post.PostCategory.NameOfPostCategory,
                     Country = post.Address.Country,
                     Location = post.Address.Location,
                     Region = post.Address.Region
-                }).ToList();
+                }).ToListAsync();
             return posts;
         }
 
-        public PostViewModel GetById(int id)
+        public async Task<PostViewModel> GetById(int id)
         {
-            PostViewModel? post = _context.Posts
+            var post = await _context.Posts
              .Include(p => p.PostCategory)
              .Include(p => p.Address)
              .Where(p => p.Id == id)
@@ -52,10 +52,12 @@ namespace SocialMediaMVCwebApp.Repository
                  Location = post.Address.Location,
                  Region = post.Address.Region
              })
-             .FirstOrDefault();
+             .FirstOrDefaultAsync();
 
             return post;
         }
+
+        
 
 
 

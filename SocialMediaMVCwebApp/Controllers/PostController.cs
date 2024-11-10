@@ -15,15 +15,15 @@ namespace SocialMediaMVCwebApp.Controllers
             _postRepository = postRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<PostViewModel> posts = _postRepository.GetAllPosts();
+            IEnumerable<PostViewModel> posts = await _postRepository.GetAllPosts();
             return View(posts);
         }
 
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
-            PostViewModel post = _postRepository.GetById(id);
+            PostViewModel post = await _postRepository.GetById(id);
             if (post == null)
             {
                 return NotFound();
