@@ -19,6 +19,7 @@ namespace SocialMediaMVCwebApp.Controllers
             _photoService = photoService;
         }
 
+        // GET: 
         public async Task<IActionResult> Index()
         {
             IEnumerable<Post> posts = (await _postRepository.GetAllPosts()).Reverse();
@@ -27,6 +28,7 @@ namespace SocialMediaMVCwebApp.Controllers
             return View(postViewModels);
         }
 
+        // GET: Detail
         public async Task<IActionResult> Detail(int id)
         {
             Post post = await _postRepository.GetById(id);
@@ -40,6 +42,7 @@ namespace SocialMediaMVCwebApp.Controllers
         }
 
 
+        // GET: Create
         public async Task<IActionResult> Create()
         {
             // Fetch post categories from the repository
@@ -56,7 +59,7 @@ namespace SocialMediaMVCwebApp.Controllers
 
             return View(model);
         }
-
+        // POST: Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreatePostViewModel model)

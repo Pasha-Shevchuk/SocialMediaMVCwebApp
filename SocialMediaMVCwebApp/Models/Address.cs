@@ -8,7 +8,7 @@ namespace SocialMediaMVCwebApp.Models
         [Key]
         public int Id { get; set; }
         public string? Country { get; set; }
-        public string? Location { get; set; }// City/Village
+        public string? Location { get; set; }// City/Village/street
         public string? Region{ get; set; } // Oblast, State...
 
     }
