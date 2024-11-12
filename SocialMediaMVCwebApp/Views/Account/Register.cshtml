@@ -1,0 +1,55 @@
+﻿@using SocialMediaMVCwebApp.ViewModels
+@model RegisterViewModel
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+
+
+<h3 class="container mb-0 text-center" style="max-width:35%; border-radius: 8px 8px 0 0">Register</h3>
+<main class="form-signin d-flex container justify-content-center w-50 " style="max-width:35%; border-radius: 0 0 8px 8px">
+    <form asp-action="Register" method="post">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+
+        <div class="form-group">
+            <label asp-for="Email" class="text-light"></label>
+            <input asp-for="Email" class="form-control" placeholder="Email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password" class="text-light"></label>
+            <input asp-for="Password" class="form-control" placeholder="Password" type="password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ConfirmPassword" class="text-light"></label>
+            <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password" type="password" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-success mt-3 w-100">Register</button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
