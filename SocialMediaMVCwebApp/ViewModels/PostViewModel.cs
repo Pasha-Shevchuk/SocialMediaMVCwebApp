@@ -16,7 +16,8 @@
         public string Country { get; set; }
         public string Location { get; set; }
         public string Region { get; set; }
-
+        // AppUserId (to check if the current user is the post owner)
+        public string AppUserId { get; set; }
     }
 
 }

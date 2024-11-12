@@ -14,11 +14,13 @@ namespace SocialMediaMVCwebApp.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly IPhotoService _photoService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PostController(IPostRepository postRepository, IPhotoService photoService)
+        public PostController(IPostRepository postRepository, IPhotoService photoService, IHttpContextAccessor httpContextAccessor)
         {
             _postRepository = postRepository;
             _photoService = photoService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: 
@@ -39,7 +41,20 @@ namespace SocialMediaMVCwebApp.Controllers
                 return NotFound();
             }
 
-            PostViewModel postViewModel = MapToViewModel(post);
+            // Map post to PostViewModel
+            PostViewModel postViewModel = new PostViewModel
+            {
+                Id = post.Id,
+                Title = post.Title,
+                PostText = post.PostText,
+                Image = post.Image,
+                PostCategoryName = post.PostCategory.NameOfPostCategory,
+                Country = post.Address?.Country,
+                Location = post.Address?.Location,
+                Region = post.Address?.Region,
+                AppUserId = post.AppUserId // Set the AppUserId here
+            };
+
             return View(postViewModel);
         }
 
