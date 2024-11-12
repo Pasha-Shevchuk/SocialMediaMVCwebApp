@@ -7,6 +7,8 @@ namespace SocialMediaMVCwebApp.Interfaces
     {
         Task<IEnumerable<AppUser>> GetAllUsers();
         Task<AppUser> GetById(string id);
+
+        Task<IEnumerable<Gender>> GetAllGenders();
         bool Save();
         bool Delete(AppUser appUser);
         bool Update(AppUser appUser);

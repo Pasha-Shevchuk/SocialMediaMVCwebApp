@@ -12,10 +12,12 @@
             <!-- Display user details -->
             <div class="text-start" style="width: 100%; max-width: 400px;">
                 <p><strong>Username:</strong> @Model.UserName</p>
-                <p><strong>Gender:</strong> @Model.GenderName ?? "Not Specified"</p>
+                <p><strong>Gender:</strong> @(Model.GenderName ?? "Not Specified")</p>
                 <p>
                     <strong>Location:</strong>
-                    @if (string.IsNullOrWhiteSpace(Model.Country) && string.IsNullOrWhiteSpace(Model.Region) && string.IsNullOrWhiteSpace(Model.Location))
+                    @if (string.IsNullOrWhiteSpace(Model.Country) && 
+                        string.IsNullOrWhiteSpace(Model.Region) && 
+                        string.IsNullOrWhiteSpace(Model.Location))
                     {
                         <span>Not Specified</span>
                     }
@@ -34,7 +36,7 @@
     </div>
 </div>
 
-<div class="card-footer text-center p-4">
+<div class="card-footer text-center p-4 ">
     <h3 class="mb-4 text-primary">User Posts</h3>
     <div class="row">
         @if (!Model.UserPosts.Any())
@@ -45,7 +47,7 @@
         {
             @foreach (var post in Model.UserPosts)
             {
-                <div class="col-md-4 mb-4">
+                <div class="col-md-4 mb-4 card_hovering_resize">
                     <div class="card h-100 shadow-sm">
                         <img src="@post.Image" alt="Post Image" class="card-img-top" style="object-fit: cover; height: 200px;">
                         <div class="card-body">
@@ -69,62 +71,3 @@
         }
     </div>
 </div>
-
-@* 
-@model SocialMediaMVCwebApp.ViewModels.UserDetailsViewModel
-
-<div class="container mt-5">
-    <div class="card shadow-lg border-0">
-        <div class="card-header bg-primary text-white text-center py-4">
-            <h2 class="mb-0">@Model.UserName's Profile</h2>
-        </div>
-        <div class="card-body text-center p-4">
-            <div class="row justify-content-center mb-4">
-                <div class="col-md-4">
-                    <p class="mb-1"><strong>Gender:</strong> <span class="text-muted">@Model.GenderName</span></p>
-                    <p class="mb-1">
-                        <strong>Location:</strong>
-                        <span class="text-muted">@Model.Location, @Model.Region, @Model.Country</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="card-footer text-center bg-light p-4">
-            <h3 class="mb-4 text-primary">User Posts</h3>
-            <div class="row">
-                @if (!Model.UserPosts.Any())
-                {
-                    <p class="text-muted">No posts available.</p>
-                }
-                else
-                {
-                    @foreach (var post in Model.UserPosts)
-                    {
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100 shadow-sm">
-                                <img src="@post.Image" alt="Post Image" class="card-img-top" style="object-fit: cover; height: 200px;">
-                                <div class="card-body">
-                                    <h5 class="card-title text-primary">@post.Title</h5>
-                                    <p class="card-text text-truncate" style="max-height: 80px;">@post.PostText</p>
-                                    <hr>
-                                    <p class="mb-1"><strong>Category:</strong> <span class="text-muted">@post.PostCategoryName</span></p>
-                                    <p class="mb-1">
-                                        <strong>Location:</strong>
-                                        <span class="text-muted">@post.Location, @post.Region, @post.Country</span>
-                                    </p>
-                                </div>
-                                <div class="card-footer bg-transparent border-top-0">
-                                    <a asp-controller="Post" asp-action="Detail" asp-route-id="@post.Id" class="btn btn-primary btn-sm w-100">
-                                        View Details
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                }
-            </div>
-        </div>
-    </div>
-</div> *@
-
-

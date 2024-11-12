@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using SocialMediaMVCwebApp.Data;
 using SocialMediaMVCwebApp.Interfaces;
 using SocialMediaMVCwebApp.Models;
 using SocialMediaMVCwebApp.ViewModels;
@@ -9,11 +12,13 @@ namespace SocialMediaMVCwebApp.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IPostRepository _postRepository; // Inject post repository
+        private readonly AppDbContext _context;
 
-        public UserController(IUserRepository userRepository, IPostRepository postRepository)
+        public UserController(IUserRepository userRepository, IPostRepository postRepository, AppDbContext context)
         {
             _userRepository = userRepository;
             _postRepository = postRepository;
+            _context = context;
         }
 
         [HttpGet("users")]
@@ -32,7 +37,6 @@ namespace SocialMediaMVCwebApp.Controllers
 
             return View(userViewModels);
         }
-
 
         [HttpGet("users/details/{id}")]
         public async Task<IActionResult> Details(string id)
@@ -71,8 +75,65 @@ namespace SocialMediaMVCwebApp.Controllers
             return View(userDetailViewModel);
         }
 
+        [HttpGet("users/edit/{id}")]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var user = await _userRepository.GetById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var genders = await _userRepository.GetAllGenders(); // Fetch the list of genders from the database
+            var editUserViewModel = new UserEditViewModel
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                GenderId = user.GenderId,
+                Country = user.Address?.Country,
+                Location = user.Address?.Location,
+                Region = user.Address?.Region,
+                GenderOptions = new SelectList(genders, "Id", "NameOfGender", user.GenderId)
+            };
+
+            return View(editUserViewModel);
+        }
+
+        [HttpPost("users/edit/{id}")]
+        public async Task<IActionResult> Edit(UserEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.GenderOptions = new SelectList(await _context.Genders.ToListAsync(), "Id", "NameOfGender", model.GenderId);
+                return View(model);
+            }
+
+            AppUser user = await _userRepository.GetById(model.Id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.UserName = model.UserName;
+            user.GenderId = model.GenderId;
+            //user.Address.Country = model.Country;
+            //user.Address.Location = model.Location;
+            //user.Address.Region = model.Region;
+            user.Address = new Address
+            {
+                Country = model.Country,
+                Location = model.Location,
+                Region = model.Region
+            };
+
+            _userRepository.Update(user);
+            _userRepository.Save();
+
+            return RedirectToAction("Details", new { id = user.Id });
+        }
+
+
 
 
     }
-
 }

@@ -26,6 +26,11 @@ namespace SocialMediaMVCwebApp.Repository
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<Gender>> GetAllGenders()
+        {
+            return await _context.Genders.ToListAsync();
+        }
+
         // Include Gender and Address when fetching all users
         public async Task<IEnumerable<AppUser>> GetAllUsers()
         {
@@ -43,6 +48,7 @@ namespace SocialMediaMVCwebApp.Repository
                 .Include(u => u.Address)   // Eager load the related Address
                 .FirstOrDefaultAsync(u => u.Id == id); // Use FirstOrDefaultAsync for retrieving by Id
         }
+
 
         public bool Save()
         {

@@ -35,7 +35,7 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div class="text-white">
-                            Welcome, @User.Identity.Name
+                            Welcome, <a asp-controller="Dashboard" asp-action="UserDetails"> @User.Identity.Name</a>
                             <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-outline-danger ms-2">Logout</button>
                             </form>

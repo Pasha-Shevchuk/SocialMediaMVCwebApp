@@ -58,7 +58,6 @@ namespace SocialMediaMVCwebApp.Controllers
             return View(postViewModel);
         }
 
-
         // GET: Create
         public async Task<IActionResult> Create()
         {
@@ -257,9 +256,6 @@ namespace SocialMediaMVCwebApp.Controllers
             return RedirectToAction("Index"); // Redirect to a page like Index after deletion
         }
 
-
-
-
         private PostViewModel MapToViewModel(Post post)
         {
             return new PostViewModel
@@ -275,7 +271,7 @@ namespace SocialMediaMVCwebApp.Controllers
                 Region = post.Address.Region
             };
         }
+    
+    
     }
-
-
 }
