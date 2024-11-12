@@ -126,11 +126,19 @@ namespace SocialMediaMVCwebApp.Controllers
         // GET: Edit
         public async Task<IActionResult> Edit(int id)
         {
+            
             // Fetch the post by its ID
             Post post = await _postRepository.GetById(id);
             if (post == null)
             {
                 return NotFound();
+            }
+
+            // Check if the current user is the owner of the post
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (post.AppUserId != currentUserId) // Prevent access to other users' posts
+            {
+                return Forbid(); // Or redirect to an error page
             }
 
             // Fetch post categories to populate the dropdown list
@@ -152,6 +160,8 @@ namespace SocialMediaMVCwebApp.Controllers
                 Location = post.Address?.Location,
                 Region = post.Address?.Region
             };
+
+         
 
             return View(model);
         }
@@ -211,6 +221,14 @@ namespace SocialMediaMVCwebApp.Controllers
             var post = await _postRepository.GetById(id);
             if (post == null) return NotFound();
 
+            // Check if the current user is the owner of the post
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (post.AppUserId != currentUserId) // Prevent access to other users' posts
+            {
+                return Forbid(); // Or redirect to an error page
+            }
+
+
             var viewModel = new DeletePostViewModel
             {
                 Id = post.Id,
@@ -229,6 +247,7 @@ namespace SocialMediaMVCwebApp.Controllers
             var post = await _postRepository.GetById(viewModel.Id);
             if (post == null) return NotFound();
 
+           
             if (!string.IsNullOrEmpty(post.Image))
             {
                 await _photoService.DeletePhotoAsync(post.Image); // Delete the photo from Cloudinary
