@@ -21,6 +21,12 @@
                     <li><a class="nav-link px-2 text-secondary" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a class="nav-link px-2 text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                     <li><a class="nav-link px-2 text-white" asp-area="" asp-controller="Post" asp-action="Index">Posts</a></li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a class="nav-link px-2 text-white" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+
+                    }
+
                 </ul>
                 <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                     <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">

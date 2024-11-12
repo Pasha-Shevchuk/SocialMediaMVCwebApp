@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SocialMediaMVCwebApp.Data;
 using SocialMediaMVCwebApp.Interfaces;
 using SocialMediaMVCwebApp.Models;
 using SocialMediaMVCwebApp.ViewModels;
+using System.Security.Claims;
 
 namespace SocialMediaMVCwebApp.Controllers
 {
@@ -48,8 +50,12 @@ namespace SocialMediaMVCwebApp.Controllers
             // Fetch post categories from the repository
             IEnumerable<PostCategory> categories = await _postRepository.GetAllPostCategories();
 
-            var model = new CreatePostViewModel
+            // Set the AppUserId (assuming you have access to the user ID from the current user context)
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            CreatePostViewModel model = new CreatePostViewModel
             {
+                AppUserId = userId,  // Set the AppUserId here
                 PostCategories = categories.Select(pc => new SelectListItem
                 {
                     Value = pc.Id.ToString(),
@@ -59,6 +65,7 @@ namespace SocialMediaMVCwebApp.Controllers
 
             return View(model);
         }
+        
         // POST: Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -66,15 +73,16 @@ namespace SocialMediaMVCwebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _photoService.AddPhotoAsync(model.Image, 400, 600);
+                ImageUploadResult result = await _photoService.AddPhotoAsync(model.Image, 400, 600);
 
                 // Create a new Post
-                var post = new Post
+                Post post = new Post
                 {
                     Title = model.Title,
                     PostText = model.PostText,
                     Image = result.Url.ToString(),  // You may want to add file upload handling here
                     PostCategoryId = model.PostCategoryId,
+                    AppUserId = model.AppUserId,
                     Address = new Address
                     {
                         Country = model.Country,
@@ -90,7 +98,7 @@ namespace SocialMediaMVCwebApp.Controllers
             }
 
             // If validation failed, fetch the post categories again
-            var categories = await _postRepository.GetAllPostCategories();
+            IEnumerable<PostCategory> categories = await _postRepository.GetAllPostCategories();
             model.PostCategories = categories.Select(pc => new SelectListItem
             {
                 Value = pc.Id.ToString(),
