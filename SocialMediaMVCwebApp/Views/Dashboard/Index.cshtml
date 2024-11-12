@@ -8,7 +8,9 @@
             <p class="lead text-body-secondary">In this page you can manipulate you posts as well as edit your personal account</p>
             <p>
                 <a class="btn btn-primary my-2" asp-controller="Post" asp-action="Create">Create a new Post</a>
-                <a class="btn btn-secondary my-2">User Details</a>
+                <a class="btn btn-secondary my-2">My Profile</a>
+                <a class="btn btn-secondary my-2">Edit Profile</a>
+
             </p>
         </div>
     </div>
@@ -20,7 +22,7 @@
             @foreach (var post in Model.Posts)
             {
                 <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm h-100">
+                    <div class="card card_hovering_resize shadow-sm h-100">
                         <img class="bd-placeholder-img img-top" width="100%" height="225" src="@post.Image" alt="Alternate Text" style="object-fit: cover;" />
                         <div class="card-body">
                             <h5 class="card-title font-weight-bold mb-2">@post.Title</h5>
