@@ -19,6 +19,7 @@ namespace SocialMediaMVCwebApp.Controllers
             _photoService = photoService;
         }
 
+        // GET: 
         public async Task<IActionResult> Index()
         {
             IEnumerable<Post> posts = (await _postRepository.GetAllPosts()).Reverse();
@@ -27,6 +28,7 @@ namespace SocialMediaMVCwebApp.Controllers
             return View(postViewModels);
         }
 
+        // GET: Detail
         public async Task<IActionResult> Detail(int id)
         {
             Post post = await _postRepository.GetById(id);
@@ -40,6 +42,7 @@ namespace SocialMediaMVCwebApp.Controllers
         }
 
 
+        // GET: Create
         public async Task<IActionResult> Create()
         {
             // Fetch post categories from the repository
@@ -56,7 +59,7 @@ namespace SocialMediaMVCwebApp.Controllers
 
             return View(model);
         }
-
+        // POST: Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreatePostViewModel model)
@@ -178,7 +181,39 @@ namespace SocialMediaMVCwebApp.Controllers
             return View(model);
         }
 
+        // GET: /Post/Delete/5
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var post = await _postRepository.GetById(id);
+            if (post == null) return NotFound();
 
+            var viewModel = new DeletePostViewModel
+            {
+                Id = post.Id,
+                Title = post.Title,
+                ImageUrl = post.Image
+            };
+
+            return View(viewModel);
+        }
+
+        // POST: /Post/Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(DeletePostViewModel viewModel)
+        {
+            var post = await _postRepository.GetById(viewModel.Id);
+            if (post == null) return NotFound();
+
+            if (!string.IsNullOrEmpty(post.Image))
+            {
+                await _photoService.DeletePhotoAsync(post.Image); // Delete the photo from Cloudinary
+            }
+
+            _postRepository.Delete(post); // Remove the post from the database
+            return RedirectToAction("Index"); // Redirect to a page like Index after deletion
+        }
 
 
 

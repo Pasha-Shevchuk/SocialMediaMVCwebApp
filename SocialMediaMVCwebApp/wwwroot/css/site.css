@@ -29,8 +29,8 @@ body {
 /* Dark Mode Styles */
 .container {
     background-color: #1D1D1D;
-    border-radius: 8px;
-    padding: 20px;
+    border-radius: 5px;
+    padding: 20px; 
 }
 
 .card {

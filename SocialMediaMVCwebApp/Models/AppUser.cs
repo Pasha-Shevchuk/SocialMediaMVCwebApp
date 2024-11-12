@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialMediaMVCwebApp.Models
 {
-    public class AppUser 
+    public class AppUser : IdentityUser
     {
-        [Key]
-        public string Id { get; set; }
 
         [ForeignKey("AddressId")]
         public int? AddressId{ get; set; }

@@ -26,8 +26,20 @@
                     <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
                 </form>
                 <div class="text-end">
-                    <button type="button" class="btn btn-outline-light me-2">Login</button>
-                    <button type="button" class="btn btn-primary">Sign-up</button>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="text-white">
+                            Welcome, @User.Identity.Name
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger ms-2">Logout</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <a type="button" class="btn btn-outline-light me-2" asp-controller="Account" asp-action="Login">Login</a>
+                        <a type="button" class="btn btn-primary" asp-controller="Account" asp-action="Register">Sign-up</a>
+                    }
                 </div>
             </div>
         </div>

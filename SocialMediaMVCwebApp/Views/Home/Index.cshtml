@@ -13,4 +13,10 @@
             </p>
         </div>
     </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div>
+            Welcome @User.Identity.Name
+        </div>
+    }
 </section>

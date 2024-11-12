@@ -43,9 +43,9 @@
                             <!-- Action Buttons -->
                             <div class="d-flex justify-content-between align-items-center mt-4">
                                 <div class="btn-group">
-@*                                     <a href="@Url.Action("Details", "Post", new { id = post.Id })" class="btn btn-sm btn-outline-primary">View</a>
+@*                                     <a href="@Url.Action("Details", "Post", new { id = post.Id })" class="btn btn-sm btn-primary">View</a>
  *@
-                                    <a type="button" class="btn btn-sm btn-outline-primary" asp-controller="Post" asp-action="Detail" asp-route-id="@post.Id">View</a>
+                                    <a type="button" class="btn btn-sm btn-primary" asp-controller="Post" asp-action="Detail" asp-route-id="@post.Id">View</a>
                                     
                                 </div>
                                 <small class="text-muted">@post.PostCategoryName</small>
