@@ -13,6 +13,7 @@ namespace SocialMediaMVCwebApp.Interfaces
         bool Update(Post post);
         bool Delete(Post post);
         bool Save();
+        Task<IEnumerable<Post>> GetPostsByUserId(string userId);
 
 
     }

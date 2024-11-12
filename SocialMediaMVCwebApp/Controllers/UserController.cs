@@ -8,10 +8,12 @@ namespace SocialMediaMVCwebApp.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPostRepository _postRepository; // Inject post repository
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, IPostRepository postRepository)
         {
             _userRepository = userRepository;
+            _postRepository = postRepository;
         }
 
         [HttpGet("users")]
@@ -35,20 +37,35 @@ namespace SocialMediaMVCwebApp.Controllers
         [HttpGet("users/details/{id}")]
         public async Task<IActionResult> Details(string id)
         {
-            var user = await _userRepository.GetById(id); // Get the user with Gender and Address included
+            var user = await _userRepository.GetById(id);
             if (user == null)
             {
-                return NotFound(); // Handle case if user is not found
+                return NotFound();
             }
+
+            var userPosts = await _postRepository.GetPostsByUserId(id);
 
             var userDetailViewModel = new UserDetailsViewModel
             {
                 Id = user.Id,
                 UserName = user.UserName,
-                GenderName = user.Gender?.NameOfGender, // Assuming Gender has 'NameOfGender' property
-                Country = user.Address?.Country,        // Assuming Address has 'Country' property
-                Location = user.Address?.Location,      // Assuming Address has 'Location' property
-                Region = user.Address?.Region           // Assuming Address has 'Region' property
+                GenderName = user.Gender?.NameOfGender,
+                Country = user.Address?.Country,
+                Location = user.Address?.Location,
+                Region = user.Address?.Region,
+                UserPosts = userPosts.Select(p => new PostViewModel
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    PostText = p.PostText,
+                    Image = p.Image,
+                    PostCategoryId = p.PostCategoryId,
+                    PostCategoryName = p.PostCategory?.NameOfPostCategory,
+                    Country = p.Address?.Country,
+                    Location = p.Address?.Location,
+                    Region = p.Address?.Region,
+                    AppUserId = p.AppUserId
+                }).ToList()
             };
 
             return View(userDetailViewModel);

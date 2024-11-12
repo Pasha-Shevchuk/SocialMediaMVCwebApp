@@ -8,5 +8,7 @@
         public string Country { get; set; }
         public string Location { get; set; }
         public string Region { get; set; }
+        public List<PostViewModel> UserPosts { get; set; } = new List<PostViewModel>();
     }
+
 }

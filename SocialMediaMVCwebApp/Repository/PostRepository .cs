@@ -57,6 +57,15 @@ namespace SocialMediaMVCwebApp.Repository
         }
 
 
+        public async Task<IEnumerable<Post>> GetPostsByUserId(string userId)
+        {
+            return await _context.Posts
+                .Where(p => p.AppUserId == userId)
+                .Include(p => p.PostCategory)
+                .Include(p => p.Address)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<PostCategory>> GetAllPostCategories()
         {
             return await _context.PostCategories.ToListAsync();
