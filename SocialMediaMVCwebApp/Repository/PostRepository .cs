@@ -71,6 +71,21 @@ namespace SocialMediaMVCwebApp.Repository
             return await _context.PostCategories.ToListAsync();
         }
 
+
+        public async Task<bool> AddComment(Comment comment)
+        {
+            _context.Comments.Add(comment);
+            return Save();
+        }
+
+        public async Task<IEnumerable<Comment>> GetCommentsByPostId(int postId)
+        {
+            return await _context.Comments
+                .Where(c => c.PostId == postId)
+                .Include(c => c.AppUser)
+                .ToListAsync();
+        }
+
     }
 
 }

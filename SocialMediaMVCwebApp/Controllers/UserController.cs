@@ -116,9 +116,6 @@ namespace SocialMediaMVCwebApp.Controllers
 
             user.UserName = model.UserName;
             user.GenderId = model.GenderId;
-            //user.Address.Country = model.Country;
-            //user.Address.Location = model.Location;
-            //user.Address.Region = model.Region;
             user.Address = new Address
             {
                 Country = model.Country,

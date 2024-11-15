@@ -36,12 +36,10 @@ namespace SocialMediaMVCwebApp.Controllers
         public async Task<IActionResult> Detail(int id)
         {
             Post post = await _postRepository.GetById(id);
-            if (post == null)
-            {
-                return NotFound();
-            }
+            if (post == null) return NotFound();
 
-            // Map post to PostViewModel
+            var comments = await _postRepository.GetCommentsByPostId(id);
+
             PostViewModel postViewModel = new PostViewModel
             {
                 Id = post.Id,
@@ -52,7 +50,14 @@ namespace SocialMediaMVCwebApp.Controllers
                 Country = post.Address?.Country,
                 Location = post.Address?.Location,
                 Region = post.Address?.Region,
-                AppUserId = post.AppUserId // Set the AppUserId here
+                AppUserId = post.AppUserId,
+                Comments = comments.Select(c => new CommentViewModel
+                {
+                    Id = c.Id,
+                    Text = c.Text,
+                    UserName = c.AppUser.UserName,
+                    CreatedAt = c.CreatedAt
+                }).ToList()
             };
 
             return View(postViewModel);
@@ -255,6 +260,41 @@ namespace SocialMediaMVCwebApp.Controllers
             _postRepository.Delete(post); // Remove the post from the database
             return RedirectToAction("Index"); // Redirect to a page like Index after deletion
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddComment(int postId, string commentText)
+        {
+            // Get the current user's ID
+            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            // Create a new Comment instance with the provided text and post ID
+            Comment newComment = new Comment
+            {
+                Text = commentText,
+                PostId = postId,
+                AppUserId = userId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // Add the comment to the database through the repository
+            var success = await _postRepository.AddComment(newComment);
+            if (!success)
+            {
+                // Handle the error if saving failed
+                ModelState.AddModelError(string.Empty, "Failed to add the comment.");
+                return RedirectToAction("Detail", new { id = postId });
+            }
+
+            // Redirect back to the Detail page to show the updated comments
+            return RedirectToAction("Detail", new { id = postId });
+        }
+
+
+
+
+
 
         private PostViewModel MapToViewModel(Post post)
         {

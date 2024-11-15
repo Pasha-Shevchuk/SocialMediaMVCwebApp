@@ -18,6 +18,7 @@
         public string Region { get; set; }
         // AppUserId (to check if the current user is the post owner)
         public string AppUserId { get; set; }
+        public List<CommentViewModel>? Comments { get; set; }
     }
 
 }
