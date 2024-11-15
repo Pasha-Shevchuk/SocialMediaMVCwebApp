@@ -1,0 +1,28 @@
+﻿@model IEnumerable<SocialMediaMVCwebApp.ViewModels.UsersViewModel>
+
+@{
+    ViewData["Title"] = "Discover Users";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center text-white mb-4">Discover Users</h1>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var user in Model)
+        {
+            <div class="col">
+                <div class="card card_hovering_resize bg-dark text-white shadow-lg border-0 rounded">
+                    <img src="" class="card-img-top" alt="@user.UserName" />
+                    <div class="card-body">
+                        <h5 class="card-title">@user.UserName</h5>
+                       
+                        <p class="card-text">Gender: @user.GenderName</p>
+                        <p class="card-text">Location: @user.Country @user.Location @user.Region</p>
+
+                        <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-primary">View</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

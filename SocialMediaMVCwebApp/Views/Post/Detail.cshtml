@@ -1,7 +1,9 @@
-﻿@model SocialMediaMVCwebApp.ViewModels.PostViewModel
+﻿@using System.Security.Claims
+@model SocialMediaMVCwebApp.ViewModels.PostViewModel
 
 @{
     ViewData["Title"] = Model.Title;
+    string? currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 <div class="container mt-4">
@@ -19,15 +21,6 @@
         <div class="col-md-12">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <!-- User Info -->
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="https://via.placeholder.com/50" class="rounded-circle" alt="User Image">
-                        <div class="ms-3">
-                           @*  <strong class="text-white">@Model.AppUser.UserName</strong>
-                            <p class="mb-0 text-muted">@Model.AppUser.Email</p> *@
-                        </div>
-                    </div>
-
                     <!-- Post Title -->
                     <h1 class="card-title text-white">@Model.Title</h1>
                     <p class="card-text text-white">@Model.PostText</p>
@@ -37,7 +30,8 @@
                         <strong class="text-white">Category:</strong>
                         <span class="badge bg-secondary bg-opacity-50">@Model.PostCategoryName</span>
                     </div>
-                    @if(!(Model.Location is null && Model.Country is null && Model.Region is null))
+
+                    @if (!(Model.Location is null && Model.Country is null && Model.Region is null))
                     {
                         <!-- Post Location -->
                         <div class="mb-2">
@@ -45,13 +39,14 @@
                             <span class="text-muted">@Model.Location @Model.Region @Model.Country</span>
                         </div>
                     }
-                   
 
                     <!-- Post Details -->
                     <div class="d-flex align-items-center justify-content-start">
-@*                         <small class="text-muted">Posted on: @Model.PostDate.ToString("MMMM dd, yyyy")</small>
- *@                        <a href="@Url.Action("Edit", "Post", new { id = Model.Id })" class="btn btn-primary btn-sm me-2">Edit Post</a>
-                        <a href="@Url.Action("Delete", "Post", new { id = Model.Id })" class="btn btn-danger btn-sm">Delete Post</a>
+                        @if (Model.AppUserId == currentUserId) // Check if the current user is the post owner
+                        {
+                            <a href="@Url.Action("Edit", "Post", new { id = Model.Id })" class="btn btn-primary btn-sm me-2">Edit Post</a>
+                            <a href="@Url.Action("Delete", "Post", new { id = Model.Id })" class="btn btn-danger btn-sm">Delete Post</a>
+                        }
                     </div>
                 </div>
             </div>
@@ -70,20 +65,31 @@
         </div>
     </div>
 
-    <!-- Post Comments Section -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <h3 class="text-white">Comments</h3>
-            <div class="card">
-                <div class="card-body">
-                    <p class="text-muted">No comments yet...</p>
-                </div>
+    <!-- Add Comment Form -->
+    <form asp-action="AddComment" method="post">
+        <input type="hidden" name="postId" value="@Model.Id" />
+        <div class="mb-3">
+            <textarea name="commentText" class="form-control" placeholder="Add a comment..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Submit Comment</button>
+    </form>
+
+    <!-- Display Comments -->
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="card mb-2">
+            <div class="card-body">
+                <h5 class="card-title">@comment.UserName</h5>
+                <p class="card-text">@comment.Text</p>
+                <p class="text-muted">@comment.CreatedAt.ToString("g")</p>
             </div>
         </div>
-    </div>
+    }
+
+
 
     <!-- Back Button -->
     <div class="mt-4">
-        <a href="@Url.Action("Index", "Post")" class="btn btn-secondary">Back to Posts</a>
+        <a href="@Url.Action("Index", "Post")" class="btn btn-secondary mt-4">Back to Posts</a>
     </div>
 </div>

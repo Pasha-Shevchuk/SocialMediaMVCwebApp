@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SocialMediaMVCwebApp.Data;
 using SocialMediaMVCwebApp.Interfaces;
 using SocialMediaMVCwebApp.Models;
 using SocialMediaMVCwebApp.ViewModels;
+using System.Security.Claims;
 
 namespace SocialMediaMVCwebApp.Controllers
 {
@@ -12,11 +14,13 @@ namespace SocialMediaMVCwebApp.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly IPhotoService _photoService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PostController(IPostRepository postRepository, IPhotoService photoService)
+        public PostController(IPostRepository postRepository, IPhotoService photoService, IHttpContextAccessor httpContextAccessor)
         {
             _postRepository = postRepository;
             _photoService = photoService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: 
@@ -32,15 +36,32 @@ namespace SocialMediaMVCwebApp.Controllers
         public async Task<IActionResult> Detail(int id)
         {
             Post post = await _postRepository.GetById(id);
-            if (post == null)
-            {
-                return NotFound();
-            }
+            if (post == null) return NotFound();
 
-            PostViewModel postViewModel = MapToViewModel(post);
+            var comments = await _postRepository.GetCommentsByPostId(id);
+
+            PostViewModel postViewModel = new PostViewModel
+            {
+                Id = post.Id,
+                Title = post.Title,
+                PostText = post.PostText,
+                Image = post.Image,
+                PostCategoryName = post.PostCategory.NameOfPostCategory,
+                Country = post.Address?.Country,
+                Location = post.Address?.Location,
+                Region = post.Address?.Region,
+                AppUserId = post.AppUserId,
+                Comments = comments.Select(c => new CommentViewModel
+                {
+                    Id = c.Id,
+                    Text = c.Text,
+                    UserName = c.AppUser.UserName,
+                    CreatedAt = c.CreatedAt
+                }).ToList()
+            };
+
             return View(postViewModel);
         }
-
 
         // GET: Create
         public async Task<IActionResult> Create()
@@ -48,8 +69,12 @@ namespace SocialMediaMVCwebApp.Controllers
             // Fetch post categories from the repository
             IEnumerable<PostCategory> categories = await _postRepository.GetAllPostCategories();
 
-            var model = new CreatePostViewModel
+            // Set the AppUserId (assuming you have access to the user ID from the current user context)
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            CreatePostViewModel model = new CreatePostViewModel
             {
+                AppUserId = userId,  // Set the AppUserId here
                 PostCategories = categories.Select(pc => new SelectListItem
                 {
                     Value = pc.Id.ToString(),
@@ -59,6 +84,7 @@ namespace SocialMediaMVCwebApp.Controllers
 
             return View(model);
         }
+        
         // POST: Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -66,15 +92,16 @@ namespace SocialMediaMVCwebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _photoService.AddPhotoAsync(model.Image, 400, 600);
+                ImageUploadResult result = await _photoService.AddPhotoAsync(model.Image, 400, 600);
 
                 // Create a new Post
-                var post = new Post
+                Post post = new Post
                 {
                     Title = model.Title,
                     PostText = model.PostText,
                     Image = result.Url.ToString(),  // You may want to add file upload handling here
                     PostCategoryId = model.PostCategoryId,
+                    AppUserId = model.AppUserId,
                     Address = new Address
                     {
                         Country = model.Country,
@@ -90,7 +117,7 @@ namespace SocialMediaMVCwebApp.Controllers
             }
 
             // If validation failed, fetch the post categories again
-            var categories = await _postRepository.GetAllPostCategories();
+            IEnumerable<PostCategory> categories = await _postRepository.GetAllPostCategories();
             model.PostCategories = categories.Select(pc => new SelectListItem
             {
                 Value = pc.Id.ToString(),
@@ -103,11 +130,19 @@ namespace SocialMediaMVCwebApp.Controllers
         // GET: Edit
         public async Task<IActionResult> Edit(int id)
         {
+            
             // Fetch the post by its ID
             Post post = await _postRepository.GetById(id);
             if (post == null)
             {
                 return NotFound();
+            }
+
+            // Check if the current user is the owner of the post
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (post.AppUserId != currentUserId) // Prevent access to other users' posts
+            {
+                return Forbid(); // Or redirect to an error page
             }
 
             // Fetch post categories to populate the dropdown list
@@ -129,6 +164,8 @@ namespace SocialMediaMVCwebApp.Controllers
                 Location = post.Address?.Location,
                 Region = post.Address?.Region
             };
+
+         
 
             return View(model);
         }
@@ -188,6 +225,14 @@ namespace SocialMediaMVCwebApp.Controllers
             var post = await _postRepository.GetById(id);
             if (post == null) return NotFound();
 
+            // Check if the current user is the owner of the post
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (post.AppUserId != currentUserId) // Prevent access to other users' posts
+            {
+                return Forbid(); // Or redirect to an error page
+            }
+
+
             var viewModel = new DeletePostViewModel
             {
                 Id = post.Id,
@@ -206,6 +251,7 @@ namespace SocialMediaMVCwebApp.Controllers
             var post = await _postRepository.GetById(viewModel.Id);
             if (post == null) return NotFound();
 
+           
             if (!string.IsNullOrEmpty(post.Image))
             {
                 await _photoService.DeletePhotoAsync(post.Image); // Delete the photo from Cloudinary
@@ -214,6 +260,38 @@ namespace SocialMediaMVCwebApp.Controllers
             _postRepository.Delete(post); // Remove the post from the database
             return RedirectToAction("Index"); // Redirect to a page like Index after deletion
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddComment(int postId, string commentText)
+        {
+            // Get the current user's ID
+            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            // Create a new Comment instance with the provided text and post ID
+            Comment newComment = new Comment
+            {
+                Text = commentText,
+                PostId = postId,
+                AppUserId = userId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // Add the comment to the database through the repository
+            var success = await _postRepository.AddComment(newComment);
+            if (!success)
+            {
+                // Handle the error if saving failed
+                ModelState.AddModelError(string.Empty, "Failed to add the comment.");
+                return RedirectToAction("Detail", new { id = postId });
+            }
+
+            // Redirect back to the Detail page to show the updated comments
+            return RedirectToAction("Detail", new { id = postId });
+        }
+
+
 
 
 
@@ -233,7 +311,7 @@ namespace SocialMediaMVCwebApp.Controllers
                 Region = post.Address.Region
             };
         }
+    
+    
     }
-
-
 }

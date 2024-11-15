@@ -58,3 +58,29 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+/* Ensure all cards have the same height */
+.card {
+    display: flex;
+    flex-direction: column; /* Allow cards to stretch vertically */
+    height: 100%; /* Make sure the card takes up the full available height */
+}
+
+/* Card body will fill the remaining space */
+.card-body {
+    flex-grow: 1; /* Make the body take up the remaining space */
+    padding: 1.25rem;
+}
+
+/* Optional: Equalize the height of the image to match the card size */
+.card-img-top {
+    object-fit: cover;
+    height: 200px; /* Adjust based on your design preference */
+    border-radius: 10px 10px 0 0;
+}
+
+/* Optional: Make hover effect smoother */
+.card_hovering_resize:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}

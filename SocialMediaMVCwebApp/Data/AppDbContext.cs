@@ -16,6 +16,7 @@ namespace SocialMediaMVCwebApp.Data
         public DbSet<Gender> Genders { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
     }
 }

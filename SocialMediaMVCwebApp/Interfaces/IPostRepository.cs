@@ -13,6 +13,9 @@ namespace SocialMediaMVCwebApp.Interfaces
         bool Update(Post post);
         bool Delete(Post post);
         bool Save();
+        Task<IEnumerable<Post>> GetPostsByUserId(string userId);
+        Task<bool> AddComment(Comment comment);
+        Task<IEnumerable<Comment>> GetCommentsByPostId(int postId);
 
 
     }

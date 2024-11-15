@@ -20,7 +20,13 @@
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a class="nav-link px-2 text-secondary" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a class="nav-link px-2 text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
-                    <li><a class="nav-link px-2 text-white" asp-area="" asp-controller="Post" asp-action="Index">Posts</a></li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a class="nav-link px-2 text-white" asp-area="" asp-controller="Post" asp-action="Index">Posts</a></li>
+                        <li><a class="nav-link px-2 text-white" asp-area="" asp-controller="User" asp-action="Index">Users</a></li>
+                        <li><a class="nav-link px-2 text-white" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+                    }
+
                 </ul>
                 <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                     <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
@@ -29,7 +35,7 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div class="text-white">
-                            Welcome, @User.Identity.Name
+                            Welcome, <a asp-controller="Dashboard" asp-action="UserDetails"> @User.Identity.Name</a>
                             <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-outline-danger ms-2">Logout</button>
                             </form>

@@ -1,0 +1,73 @@
+﻿@model SocialMediaMVCwebApp.ViewModels.UserDetailsViewModel
+
+<div class="mt-5 d-flex justify-content-center">
+    <div class="card shadow-sm border-0 w-50 bg-dark bg-gradient">
+        <div class="card-header bg-primary bg-gradient text-white text-center">
+            <h2>@Model.UserName's Profile</h2>
+        </div>
+        <div class="card-body d-flex flex-column align-items-center text-center">
+            <!-- Display user profile picture as a placeholder -->
+            <img src="https://via.placeholder.com/150" alt="User Profile Image" class="rounded-circle mb-3" />
+
+            <!-- Display user details -->
+            <div class="text-start" style="width: 100%; max-width: 400px;">
+                <p><strong>Username:</strong> @Model.UserName</p>
+                <p><strong>Gender:</strong> @(Model.GenderName ?? "Not Specified")</p>
+                <p>
+                    <strong>Location:</strong>
+                    @if (string.IsNullOrWhiteSpace(Model.Country) && 
+                        string.IsNullOrWhiteSpace(Model.Region) && 
+                        string.IsNullOrWhiteSpace(Model.Location))
+                    {
+                        <span>Not Specified</span>
+                    }
+                    else
+                    {
+                        <span>@Model.Location, @Model.Region, @Model.Country</span>
+                    }
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card-footer text-center">
+            <a href="@Url.Action("Index", "User")" class="btn btn-primary">Back to Users</a>
+        </div>
+    </div>
+</div>
+
+<div class="card-footer text-center p-4 ">
+    <h3 class="mb-4 text-primary">User Posts</h3>
+    <div class="row">
+        @if (!Model.UserPosts.Any())
+        {
+            <p class="text-muted">No posts available.</p>
+        }
+        else
+        {
+            @foreach (var post in Model.UserPosts)
+            {
+                <div class="col-md-4 mb-4 card_hovering_resize">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@post.Image" alt="Post Image" class="card-img-top" style="object-fit: cover; height: 200px;">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">@post.Title</h5>
+                            <p class="card-text text-truncate" style="max-height: 80px;">@post.PostText</p>
+                            <hr>
+                            <p class="mb-1"><strong>Category:</strong> <span class="text-muted">@post.PostCategoryName</span></p>
+                            <p class="mb-1">
+                                <strong>Location:</strong>
+                                <span class="text-muted">@post.Location, @post.Region, @post.Country</span>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a asp-controller="Post" asp-action="Detail" asp-route-id="@post.Id" class="btn btn-primary btn-sm w-100">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
