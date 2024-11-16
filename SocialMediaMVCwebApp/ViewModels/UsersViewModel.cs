@@ -8,6 +8,6 @@
         public string Country { get; set; }       // Address country
         public string Location { get; set; }      // Address location (city/village)
         public string Region { get; set; }        // Address region (state/oblast)
-
+        public string? Role { get; set; }
     }
 }

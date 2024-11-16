@@ -1,4 +1,5 @@
 ﻿using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -24,13 +25,47 @@ namespace SocialMediaMVCwebApp.Controllers
         }
 
         // GET: 
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public async Task<IActionResult> Index(int? postCategoryId, string searchTitle)
         {
-            IEnumerable<Post> posts = (await _postRepository.GetAllPosts()).Reverse();
+            // Fetch all posts from the repository
+            IEnumerable<Post> posts = await _postRepository.GetAllPosts();
+
+            // Fetch post categories for the filter dropdown
+            IEnumerable<PostCategory> categories = await _postRepository.GetAllPostCategories();
+
+            // Filter posts by category if a category is selected
+            if (postCategoryId.HasValue)
+            {
+                posts = posts.Where(post => post.PostCategoryId == postCategoryId.Value);
+            }
+
+            // Filter posts by title if a search query is provided
+            if (!string.IsNullOrEmpty(searchTitle))
+            {
+                posts = posts.Where(post => post.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Map posts to PostViewModel
             IEnumerable<PostViewModel> postViewModels = posts.Select(post => MapToViewModel(post));
 
-            return View(postViewModels);
+            // Create a view model to pass the posts and categories to the view
+            var viewModel = new PostIndexViewModel
+            {
+                Posts = postViewModels,
+                PostCategories = categories.Select(pc => new SelectListItem
+                {
+                    Value = pc.Id.ToString(),
+                    Text = pc.NameOfPostCategory
+                }).ToList(),
+                SelectedPostCategoryId = postCategoryId,
+                SearchTitle = searchTitle  // Pass the search query to the view model
+            };
+
+            return View(viewModel);
         }
+
+
 
         // GET: Detail
         public async Task<IActionResult> Detail(int id)
@@ -64,6 +99,7 @@ namespace SocialMediaMVCwebApp.Controllers
         }
 
         // GET: Create
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             // Fetch post categories from the repository
@@ -85,7 +121,7 @@ namespace SocialMediaMVCwebApp.Controllers
             return View(model);
         }
         
-        // POST: Create
+        //TODO POST: Create => add check for image extension
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreatePostViewModel model)
