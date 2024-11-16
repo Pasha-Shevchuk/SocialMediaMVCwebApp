@@ -33,6 +33,7 @@ namespace SocialMediaMVCwebApp.Controllers
                 Country = u.Address?.Country,  // Assuming Address has 'Country'
                 Location = u.Address?.Location, // Assuming Address has 'Location'
                 Region = u.Address?.Region   // Assuming Address has 'Region'
+                
             }).ToList();
 
             return View(userViewModels);
@@ -99,6 +100,7 @@ namespace SocialMediaMVCwebApp.Controllers
             return View(editUserViewModel);
         }
 
+        // make validation check
         [HttpPost("users/edit/{id}")]
         public async Task<IActionResult> Edit(UserEditViewModel model)
         {

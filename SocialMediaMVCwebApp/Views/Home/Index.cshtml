@@ -1,22 +1,57 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <section class="py-5 text-center container">
     <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-light">Album example</h1>
-            <p class="lead text-body-secondary">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+            <h1 class="fw-light">Welcome to SpcialMediaApp</h1>
+            <p class="lead text-body-secondary">
+                Connect, share, and engage with a community that values creativity and open communication.
+                Browse through the latest posts, comment, and share your thoughts with others!
+            </p>
             <p>
-                <a href="#" class="btn btn-primary my-2">Main call to action</a>
-                <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+                <a href="@Url.Action("Index", "Post")" class="btn btn-primary my-2">Browse Posts</a>
+                <a href="@Url.Action("Create", "Post")" class="btn btn-secondary my-2">Create a Post</a>
             </p>
         </div>
     </div>
-    @if (User.Identity.IsAuthenticated)
-    {
-        <div>
-            Welcome @User.Identity.Name
-        </div>
-    }
 </section>
+
+<!-- About Section -->
+<section class="py-5 text-center">
+    <div class="container">
+        <h2 class="display-4">About Platform</h2>
+        <p class="lead text-muted">
+            This platform is designed to give everyone a voice. Whether you're here to share your ideas, discover new trends, or just stay informed, you're in the right place!
+        </p>
+    </div>
+</section>
+
+
+
+@if (User.Identity.IsAuthenticated)
+{
+    <!-- User Greeting (only for authenticated users) -->
+    <section class="py-5 text-center">
+        <div class="container">
+            <h3 class="display-4">Welcome Back, @User.Identity.Name!</h3>
+            <p class="lead text-muted">We're happy to see you again! Check out the latest posts and engage with the community.</p>
+            <a href="@Url.Action("Index", "Post")" class="btn btn-primary my-2">Go to Your Dashboard</a>
+        </div>
+    </section>
+}
+else
+{
+    <!-- Call to Action Section -->
+    <section class="py-5 text-center">
+        <div class="container">
+            <h2 class="display-4">Join Us Today</h2>
+            <p class="lead text-muted">
+                Ready to share your story or connect with others? Sign up now to be part of our community!
+            </p>
+            <a href="@Url.Action("Register", "Account")" class="btn btn-success my-2">Sign Up Now</a>
+        </div>
+    </section>
+}
